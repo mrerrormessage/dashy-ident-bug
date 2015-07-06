@@ -1,0 +1,35 @@
+# common directory names
+classes/
+target/
+tmp/
+
+# common filenames
+.DS_Store
+npm-debug.log
+
+# wildcards
+*.tmp
+*.swp
+*.iml
+*~
+.#*
+\#*
+
+# IntelliJ IDEA
+/.idea
+/.idea_modules
+
+# Eclipse
+.classpath
+.project
+.cache
+.settings
+.worksheet
+
+# other
+/.ensime
+/.ensime_lucene/
+/jvm/node_modules/
+/build/
+/engine-benchmarks.txt
+/.projections.json
