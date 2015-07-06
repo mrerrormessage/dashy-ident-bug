@@ -1,8 +1,7 @@
 package scratch
 
 case class DashIdClass(
-  `a-b`: String,
-  `c-d`: String
+  `a-b`: String
 )
 
 object DashIdClass {

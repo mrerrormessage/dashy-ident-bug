@@ -13,9 +13,9 @@ object TestMacro {
     import c.universe._
 
     val scratchTerms = withConstructorProperties(c)(scratchType.tpe) {
-     (propTpe, termName, stringName) =>
+     termName =>
         val emptyString = ""
-        (fq"$termName <- Some($emptyString)", q"$termName = $termName")
+        (fq"$termName <- Some($emptyString)", q"$termName")
     }
 
     scratchTerms.map {
@@ -28,16 +28,11 @@ object TestMacro {
     } getOrElse c.abort(c.enclosingPosition, s"Could not find constructor for ${scratchType.tpe}")
   }
 
-  private def withConstructorProperties[T](c: BlackBoxContext)(constructedType: c.Type)(f: (c.Type, c.TermName, String) => T): Option[Seq[T]] =
-    constructedType.decls.find(_.isConstructor).map {
+  private def withConstructorProperties[T](c: BlackBoxContext)(constructedType: c.Type)(f: c.TermName => T): Option[Seq[T]] =
+    constructedType.decls.find(_.isConstructor).map(
       constructor =>
-        val typeMap = (constructedType.etaExpand.typeParams zip constructedType.typeArgs).toMap
-        constructor.asMethod.paramLists.head.map {
-          p =>
-            val tpe               = typeMap.getOrElse(p.typeSignature.typeSymbol, p.typeSignature)
-            val propertyName      = p.name.toTermName
-            val propertyStringKey = propertyName.decodedName.toString
-            f(tpe, propertyName, propertyStringKey)
-        }
-    }
+        constructor.asMethod.paramLists.head.map (
+          p => f(p.name.toTermName)
+        )
+      )
 }
